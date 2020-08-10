@@ -38,7 +38,7 @@ class Premium(commands.Cog):
         )
         await ctx.send(embed=embed)
 
-    @checks.is_premium()
+    #@checks.is_premium()
     @commands.guild_only()
     @commands.command(description="Get the premium status of this server.", usage="premiumstatus")
     async def premiumstatus(self, ctx):

@@ -17,7 +17,7 @@ class Snippet(commands.Cog):
 
     @checks.is_modmail_channel()
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="Use a snippet.", aliases=["s"], usage="snippet <name>")
@@ -33,7 +33,7 @@ class Snippet(commands.Cog):
 
     @checks.is_modmail_channel()
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="Use a snippet anonymously.", aliases=["as"], usage="asnippet <name>")
@@ -48,7 +48,7 @@ class Snippet(commands.Cog):
         await modmail.send_mail_mod(ctx.message, ctx.prefix, True, res[0], True)
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(
@@ -86,7 +86,7 @@ class Snippet(commands.Cog):
         )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="Remove a snippet.", usage="snippetremove <name>")
@@ -107,7 +107,7 @@ class Snippet(commands.Cog):
         )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(description="Remove all the snippets.", usage="snippetclear")
@@ -121,7 +121,7 @@ class Snippet(commands.Cog):
         )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @checks.is_mod()
     @commands.guild_only()
     @commands.command(

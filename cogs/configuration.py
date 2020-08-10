@@ -348,7 +348,7 @@ class Configuration(commands.Cog):
             )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
@@ -365,7 +365,7 @@ class Configuration(commands.Cog):
         )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
@@ -382,7 +382,7 @@ class Configuration(commands.Cog):
         )
 
     @checks.in_database()
-    @checks.is_premium()
+    #@checks.is_premium()
     @commands.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
