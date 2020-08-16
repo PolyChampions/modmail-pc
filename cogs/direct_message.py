@@ -96,12 +96,17 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                     log_channel = log_channel[0]
                     try:
                         embed = discord.Embed(
-                            title="New Ticket", colour=self.bot.user_colour, timestamp=datetime.datetime.utcnow(),
+                            title="New Ticket",
+                            colour=self.bot.user_colour,
+                            timestamp=datetime.datetime.utcnow(),
+                            description=message.content
                         )
                         embed.set_footer(
                             text=f"{message.author.name}#{message.author.discriminator} | {message.author.id}",
                             icon_url=message.author.avatar_url,
                         )
+                        log.info(embed.to_dict())
+                        log.info(message.content)
                         await self.bot.http.send_message(log_channel["id"], None, embed=embed.to_dict())
                     except discord.Forbidden:
                         pass
