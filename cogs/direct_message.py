@@ -22,6 +22,8 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
     async def send_mail(self, message, guild, to_send):
         self.bot.stats_messages += 1
         self.bot.prom.tickets_message_counter.inc()
+
+        guild_obj = discord.utils.get(self.bot.guilds, id=guild)
         guild = await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": guild})
         if not guild:
             await message.channel.send(
@@ -36,6 +38,18 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
             await message.channel.send(
                 embed=discord.Embed(
                     description="You are not in that server, and the message is not sent.",
+                    colour=self.bot.error_colour,
+                )
+            )
+            return
+
+        member_obj = discord.utils.get(guild_obj.members, id=message.author.id)
+        author_roles = [r.name for r in member_obj.roles]
+
+        if 'Muted' in author_roles or 'ModMailBanned' in author_roles:
+            await message.channel.send(
+                embed=discord.Embed(
+                    description="You are currently muted or banned from ModMail.",
                     colour=self.bot.error_colour,
                 )
             )
