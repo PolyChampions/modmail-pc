@@ -101,12 +101,11 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                             timestamp=datetime.datetime.utcnow(),
                             description=message.content
                         )
+                        embed.add_field(name=f"{message.author.name}#{message.author.discriminator}", value=message.author.mention, inline=False)
                         embed.set_footer(
-                            text=f"{message.author.name}#{message.author.discriminator} | {message.author.id}",
+                            text=f"",
                             icon_url=message.author.avatar_url,
                         )
-                        log.info(embed.to_dict())
-                        log.info(message.content)
                         await self.bot.http.send_message(log_channel["id"], None, embed=embed.to_dict())
                     except discord.Forbidden:
                         pass
@@ -140,9 +139,10 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                     timestamp=datetime.datetime.utcnow(),
                 )
                 embed.set_footer(
-                    text=f"{message.author.name}#{message.author.discriminator} | {message.author.id}",
+                    text=f"",
                     icon_url=message.author.avatar_url,
                 )
+                embed.add_field(name=f'{message.author.name}#{message.author.discriminator}', value=message.author.mention, inline=False)
                 roles = []
                 for role in data[8]:
                     if role == guild["default_role"]["id"]:
