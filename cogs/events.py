@@ -97,7 +97,6 @@ class Events(commands.Cog):
             title=f"[Cluster {self.bot.cluster}] Bot Ready", colour=0x00FF00, timestamp=datetime.datetime.utcnow(),
         )
         await self.bot.http.send_message(self.bot.config.event_channel, None, embed=embed.to_dict())
-        await self.bot.change_presence(activity=discord.Game(name=self.bot.config.activity))
 
     @commands.Cog.listener()
     async def on_shard_ready(self, shard):

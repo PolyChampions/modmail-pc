@@ -2,7 +2,7 @@ import datetime
 import logging
 import sys
 import traceback
-
+import discord
 import aiohttp
 import aioredis
 import asyncpg
@@ -23,6 +23,7 @@ class ModMail(commands.AutoShardedBot):
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.cluster = kwargs.get("cluster_id")
         self.cluster_count = kwargs.get("cluster_count")
+        self.activity = discord.Activity(name=config.activity, type=discord.ActivityType.watching)
 
     @property
     def uptime(self):
