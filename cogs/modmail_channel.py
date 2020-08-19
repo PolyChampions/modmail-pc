@@ -29,6 +29,12 @@ class ModMailEvents(commands.Cog):
         prefix = self.bot.tools.get_guild_prefix(self.bot, message.guild)
         if message.content.startswith(prefix):
             return
+        if message.content:
+            # ignore all messages (default is staff discussion)
+            return
+        if not message.attachments:
+            # Reply to ticket if message is blank content but includes one or more attachments
+            return
         if message.author.id in self.bot.banned_users:
             await message.channel.send(
                 embed=discord.Embed(description="You are banned from this bot.", colour=self.bot.error_colour)

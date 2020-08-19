@@ -110,3 +110,4 @@ venv.bak/
 # Custom
 config.py
 targets.json
+dump.rdb
