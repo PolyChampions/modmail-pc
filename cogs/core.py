@@ -99,23 +99,30 @@ class Core(commands.Cog):
                                     or len(m.embeds) <= 0
                                     or m.embeds[0].title not in ["Message Received", "Message Sent"]
                                 ):
+                                    history = (
+                                        f"[{str(m.created_at.replace(microsecond=0))}] {m.author.name}#{m.author.discriminator} (Staff): "
+                                        f"PRIVATE: {m.content}\n" + history
+                                    )
                                     continue
-                                if not m.embeds[0].author.name:
-                                    author = f"{' '.join(m.embeds[0].footer.text.split()[:-2])} (User)"
-                                else:
-                                    author = f"{m.embeds[0].author.name} (Staff)"
-                                description = m.embeds[0].description
-                                for attachment in [
-                                    field.value for field in m.embeds[0].fields if field.name.startswith("Attachment ")
-                                ]:
-                                    if not description:
-                                        description = f"(Attachment: {attachment})"
+                                if len(m.embeds) > 0:
+
+                                    if not m.embeds[0].author.name:
+                                        author = f"{' '.join(m.embeds[0].footer.text.split()[:-2])} (User)"
                                     else:
-                                        description = description + f" (Attachment: {attachment})"
-                                history = (
-                                    f"[{str(m.created_at.replace(microsecond=0))}] {author}: "
-                                    f"{description}\n" + history
-                                )
+                                        author = f"{m.embeds[0].author.name} (Staff)"
+                                    description = m.embeds[0].description
+                                    for attachment in [
+                                        field.value for field in m.embeds[0].fields if field.name.startswith("Attachment ")
+                                    ]:
+                                        if not description:
+                                            description = f"(Attachment: {attachment})"
+                                        else:
+                                            description = description + f" (Attachment: {attachment})"
+
+                                    history = (
+                                        f"\n[{str(m.created_at.replace(microsecond=0))}] {author}: "
+                                        f"{description}\n" + history
+                                    )
                             history = io.BytesIO(history.encode())
                             file = discord.File(
                                 history, f"modmail_log_{self.bot.tools.get_modmail_user(ctx.channel)}.txt"
