@@ -19,6 +19,8 @@ class ModMailEvents(commands.Cog):
     async def on_message(self, message):
         if message.author.bot or not message.guild or not message.channel.category_id:
             return
+        if message.guild.me in message.mentions:
+            return await message.channel.send(f'To open a ModMail ticket please PM me details of your issue.')
         if not checks.is_modmail_channel2(self.bot, message.channel):
             return
         if (
