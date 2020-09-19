@@ -146,8 +146,8 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
                 prefix = self.bot.tools.get_guild_prefix(self.bot, guild, True)
                 embed = discord.Embed(
                     title="New Ticket",
-                    description="Type a message in this channel to reply. Messages are ignored and presumed for staff discussion. "
-                    f"Use`{prefix}reply` (or `{prefix}r`) to send replies to this ticket. File attachments are sent if there is *no* message, or with `{prefix}reply`. "
+                    description="Type a message in this channel to reply. Messages or attachments are ignored and presumed for staff discussion. "
+                    f"Use`{prefix}reply` (or `{prefix}r`) to send replies to this ticket; attachments can be sent this way. "
                     f"`{prefix}close [reason]` to close this ticket.",
                     colour=self.bot.primary_colour,
                     timestamp=datetime.datetime.utcnow(),

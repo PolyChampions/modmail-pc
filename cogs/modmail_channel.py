@@ -21,6 +21,11 @@ class ModMailEvents(commands.Cog):
             return
         if message.guild.me in message.mentions:
             return await message.channel.send(f'To open a ModMail ticket please PM me details of your issue.')
+
+        return
+        # revision Sep 19 - no longer want a reply created if an attachment is sent solo, so might not be any reason for this function
+        # other than the auto-reply
+
         if not checks.is_modmail_channel2(self.bot, message.channel):
             return
         if (
@@ -78,7 +83,7 @@ class ModMailEvents(commands.Cog):
         try:
             embed = discord.Embed(
                 title="Message Received",
-                description=message.content if msg is None else msg,
+                description='' if msg is None else msg,
                 colour=self.bot.mod_colour,
                 timestamp=datetime.datetime.utcnow(),
             )
