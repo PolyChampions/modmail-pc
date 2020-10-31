@@ -3,11 +3,11 @@ import json
 import logging
 import sys
 
+import config
+import discord
 import sentry_sdk
 
 from discord.ext import commands
-
-import config
 
 from classes.bot import ModMail
 from utils.tools import get_guild_prefix
@@ -42,7 +42,9 @@ def _get_guild_prefix(bot2, message):
 
 
 bot = ModMail(
-    fetch_offline_members=config.fetch_all_members,
+    intents=discord.Intents(guilds=True, members=True, presences=True, messages=True, reactions=True),
+    member_cache_flags=None,
+    chunk_guilds_at_startup=config.fetch_all_members,
     command_prefix=_get_guild_prefix,
     case_insensitive=True,
     help_command=None,
@@ -52,6 +54,7 @@ bot = ModMail(
     shard_count=shard_count,
     cluster_id=cluster_id,
     cluster_count=cluster_count,
+    version="2.1.1",
 )
 
 

@@ -1,5 +1,6 @@
 import logging
 import platform
+import time
 
 import discord
 import psutil
@@ -14,6 +15,7 @@ log = logging.getLogger(__name__)
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        psutil.cpu_percent()
 
     @commands.bot_has_permissions(add_reactions=True)
     @commands.command(
@@ -51,12 +53,7 @@ class General(commands.Cog):
         )
         page.set_thumbnail(url=self.bot.user.avatar_url)
         page.set_footer(text="Use the reactions to flip pages.")
-        page.add_field(
-            name="Invite",
-            value=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-            "&permissions=268823640&scope=bot",
-            inline=False,
-        )
+        page.add_field(name="Invite", value="https://modmail.xyz/invite", inline=False)
         page.add_field(name="Support Server", value="https://discord.gg/wjWJwJB", inline=False)
         all_pages.append(page)
         page = discord.Embed(title=f"{self.bot.user.name} Help Menu", colour=self.bot.primary_colour)
@@ -72,9 +69,8 @@ class General(commands.Cog):
         page.add_field(
             name="Getting Started",
             value="Follow these steps to get the bot all ready to serve your server!\n1. Invite the bot with "
-            f"[this link](https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-            f"&permissions=268823640&scope=bot)\n2. Run `{ctx.prefix}setup`, there will be an interactive guide.\n"
-            f"3. All done! For a full list of commands, see `{ctx.prefix}help`.",
+            f"[this link](https://modmail.xyz/invite)\n2. Run `{ctx.prefix}setup`, there will be an interactive guide."
+            f"\n3. All done! For a full list of commands, see `{ctx.prefix}help`.",
             inline=False,
         )
         all_pages.append(page)
@@ -103,10 +99,13 @@ class General(commands.Cog):
 
     @commands.command(description="Pong! Get my latency.", usage="ping")
     async def ping(self, ctx):
-        await ctx.send(
+        start = time.time()
+        msg = await ctx.send(embed=discord.Embed(description="Checking latency...", colour=self.bot.primary_colour))
+        await msg.edit(
             embed=discord.Embed(
                 title="Pong!",
-                description=f"My current latency is {round(self.bot.latency * 1000, 2)}ms.",
+                description=f"Gateway latency: {round(self.bot.latency * 1000, 2)}ms.\n"
+                f"HTTP API latency: {round((time.time() - start) * 1000, 2)}ms.",
                 colour=self.bot.primary_colour,
             )
         )
@@ -127,12 +126,14 @@ class General(commands.Cog):
         return fmt.format(d=days, h=hours, m=minutes, s=seconds)
 
     @commands.command(
-        description="See some super cool statistics about me.", usage="stats", aliases=["statistics", "info"],
+        description="See some super cool statistics about me.",
+        usage="stats",
+        aliases=["statistics", "info"],
     )
     async def stats(self, ctx):
-        guilds = sum(await self.bot.cogs["Communication"].handler("guild_count", self.bot.cluster_count))
-        channels = sum(await self.bot.cogs["Communication"].handler("channel_count", self.bot.cluster_count))
-        users = sum(await self.bot.cogs["Communication"].handler("user_count", self.bot.cluster_count))
+        guilds = sum(await self.bot.comm.handler("guild_count", self.bot.cluster_count))
+        channels = sum(await self.bot.comm.handler("channel_count", self.bot.cluster_count))
+        users = sum(await self.bot.comm.handler("user_count", self.bot.cluster_count))
 
         embed = discord.Embed(title=f"{self.bot.user.name} Statistics", colour=self.bot.primary_colour)
         embed.add_field(name="Owner", value="CHamburr#2591")
@@ -146,18 +147,21 @@ class General(commands.Cog):
         embed.add_field(name="Servers", value=str(guilds))
         embed.add_field(name="Channels", value=str(channels))
         embed.add_field(name="Users", value=str(users))
-        embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent()}%")
+        embed.add_field(name="CPU Usage", value=f"{psutil.cpu_percent(interval=None)}%")
         embed.add_field(name="RAM Usage", value=f"{psutil.virtual_memory().percent}%")
         embed.add_field(name="Python Version", value=platform.python_version())
         embed.add_field(name="discord.py Version", value=discord.__version__)
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.set_footer(
-            text=f"Made with ❤ using discord.py", icon_url="https://www.python.org/static/opengraph-icon-200x200.png",
+            text="Made with ❤ using discord.py",
+            icon_url="https://www.python.org/static/opengraph-icon-200x200.png",
         )
         await ctx.send(embed=embed)
 
     @commands.command(
-        description="See the amazing stuff we have partnered with.", usage="partners", aliases=["partner"],
+        description="See the amazing stuff we have partnered with.",
+        usage="partners",
+        aliases=["partner"],
     )
     async def partners(self, ctx):
         all_pages = []
@@ -170,6 +174,51 @@ class General(commands.Cog):
         page.add_field(name="Link", value="https://discordtemplates.me")
         page.set_thumbnail(
             url="https://cdn.discordapp.com/icons/696179394057732237/cf54e042456638eba2ea5abddfc7910e.png"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="Call of Duty Mobile",
+            description="The Activision-supported, community-run discord for the Call of Duty: Mobile Community.",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/codmobile")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/619762818266431547/a_cce3e6b3b6e64dcf7bbb6fa92c9fc4e6.gif"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="Car Crushers Official Discord",
+            description="Official Discord server for the Roblox game, Car Crushers 2. Where you can have both on and "
+            "off topic discussions about the game or anything in general with our community of active and friendly "
+            "members!",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/CUkKzGr")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/242263977986359297/a_b45b86e21caa5edb1406a761a9efe3d5.gif"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="Eden of Gaming",
+            description="Eden of Gaming is a global gaming community that aims to share knowledge and build "
+            "relationships between members and fellow global gaming communities.",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/edenofgaming")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/457151179072339978/a_6b2bf427b3f07f209386dcf85ea94a9a.gif"
+        )
+        all_pages.append(page)
+        page = discord.Embed(
+            title="TGG's Gorilla Gang",
+            description="In this server owned by TGG, a popular Australian gaming YouTuber who is best known for his "
+            "GTA content, you will find tons of GTA online based content to have fun with including LFG channels, "
+            "GTA discussion channels, and more!",
+            colour=self.bot.primary_colour,
+        )
+        page.add_field(name="Link", value="https://discord.gg/gorillagang")
+        page.set_thumbnail(
+            url="https://cdn.discordapp.com/icons/722716210604671026/a_71cab18101a44243d0bfd94aec9cf05e.gif"
         )
         all_pages.append(page)
         page = discord.Embed(
@@ -216,7 +265,7 @@ class General(commands.Cog):
         )
         page.add_field(name="Link", value="https://discord.gg/seaofthievescommunity")
         page.set_thumbnail(
-            url="https://cdn.discordapp.com/icons/209815380946845697/f298c64717cede4589a1503d12d40fb0.png"
+            url="https://cdn.discordapp.com/icons/209815380946845697/a_04c8ae80dce6e6ef1e3d574dca61b4a2.png"
         )
         all_pages.append(page)
         page = discord.Embed(
@@ -249,7 +298,7 @@ class General(commands.Cog):
         )
         page.add_field(name="Link", value="https://discordbots.org/bot/membercount")
         page.set_thumbnail(
-            url="https://cdn.discordapp.com/avatars/432533456807919639/6b2a1311b54a1d3b3cec1fb67ef94ed7.png"
+            url="https://cdn.discordapp.com/icons/496964682972659712/0b61c5cb7b9ace8f8f5e2fef37cacb5b.png"
         )
         all_pages.append(page)
         for embed in all_pages:
@@ -263,8 +312,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Invite Link",
-                description=f"https://discordapp.com/api/oauth2/authorize?client_id={self.bot.user.id}"
-                "&permissions=268823640&scope=bot",
+                description="https://modmail.xyz/invite",
                 colour=self.bot.primary_colour,
             )
         )
@@ -284,7 +332,7 @@ class General(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Website",
-                description=f"https://modmail.netlify.com",
+                description="https://modmail.xyz",
                 colour=self.bot.primary_colour,
             )
         )
@@ -293,41 +341,9 @@ class General(commands.Cog):
     async def source(self, ctx):
         await ctx.send(
             embed=discord.Embed(
-                title="Github Repository",
-                description=f"https://github.com/CHamburr/modmail",
+                title="GitHub Repository",
+                description="https://github.com/chamburr/modmail",
                 colour=self.bot.primary_colour,
-            )
-        )
-
-    @commands.command(description="Usage statistics of the bot.", usage="usagestats", hidden=True)
-    async def usagestats(self, ctx):
-        embed = discord.Embed(
-            title="Usage Statistics",
-            description="Bot usage statistics since 1 January 2020.",
-            colour=self.bot.primary_colour,
-        )
-        async with self.bot.pool.acquire() as conn:
-            res = await conn.fetchrow("SELECT commands, messages, tickets FROM stats")
-        embed.add_field(name="Total commands", value=str(res[0]), inline=False)
-        embed.add_field(name="Total messages", value=str(res[1]), inline=False)
-        embed.add_field(name="Total tickets", value=str(res[2]), inline=False)
-        await ctx.send(embed=embed)
-
-    @commands.command(
-        description="Get the top 15 servers using this bot.", aliases=["topguilds"], usage="topservers", hidden=True,
-    )
-    async def topservers(self, ctx):
-        data = await self.bot.cogs["Communication"].handler("get_top_guilds", self.bot.cluster_count)
-        guilds = []
-        for chunk in data:
-            guilds.extend(chunk)
-        guilds = sorted(guilds, key=lambda x: x["member_count"], reverse=True)[:15]
-        top_guilds = []
-        for index, guild in enumerate(guilds):
-            top_guilds.append(f"#{str(index + 1)} {guild['name']} ({guild['member_count']} members)")
-        await ctx.send(
-            embed=discord.Embed(
-                title="Top 15 Servers", description="\n".join(top_guilds), colour=self.bot.primary_colour,
             )
         )
 

@@ -108,6 +108,7 @@ venv.bak/
 .mypy_cache/
 
 # Custom
+.DS_Store
 config.py
 targets.json
 dump.rdb

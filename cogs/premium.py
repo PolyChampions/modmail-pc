@@ -14,7 +14,9 @@ class Premium(commands.Cog):
         self.bot = bot
 
     @commands.command(
-        description="Get some information about ModMail premium.", usage="premium", aliases=["donate", "patron"],
+        description="Get some information about ModMail premium.",
+        usage="premium",
+        aliases=["donate", "patron"],
     )
     async def premium(self, ctx):
         embed = discord.Embed(
@@ -33,7 +35,7 @@ class Premium(commands.Cog):
         )
         embed.add_field(
             name="Get Premium",
-            value="Please join our support server and go to https://modmail.netlify.com/premium.",
+            value="Please join our support server and go to https://modmail.xyz/premium.",
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -68,23 +70,24 @@ class Premium(commands.Cog):
         if not res or not res[0]:
             await ctx.send(
                 embed=discord.Embed(
-                    description="You did not assign premium to any server currently.", colour=self.bot.primary_colour,
+                    description="You did not assign premium to any server currently.",
+                    colour=self.bot.primary_colour,
                 )
             )
             return
         to_send = ""
         for server in res[0]:
-            guild = await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": server})
+            guild = await self.bot.comm.handler("get_guild", 1, {"guild_id": server})
             if not guild:
                 to_send += f"\nUnknown server `{server}`"
             else:
-                to_send += f"\n{guild[0]['name']} `{server}`"
+                to_send += f"\n{guild.name} `{server}`"
         await ctx.send(embed=discord.Embed(description=to_send, colour=self.bot.primary_colour))
 
     @checks.is_patron()
     @commands.command(description="Assign premium slot to a server.", usage="premiumassign <server ID>")
     async def premiumassign(self, ctx, *, guild: int):
-        if not await self.bot.cogs["Communication"].handler("get_guild", 1, {"guild_id": guild}):
+        if not await self.bot.comm.handler("get_guild", 1, {"guild_id": guild}):
             await ctx.send(
                 embed=discord.Embed(description="The server ID you provided is invalid.", colour=self.bot.error_colour)
             )
@@ -93,7 +96,7 @@ class Premium(commands.Cog):
             res = await conn.fetch("SELECT guild FROM premium")
         all_premium = []
         for row in res:
-            all_premium.extend(row)
+            all_premium.extend(row[0])
         if guild in all_premium:
             await ctx.send(
                 embed=discord.Embed(description="That server already has premium.", colour=self.bot.error_colour)
@@ -124,7 +127,8 @@ class Premium(commands.Cog):
         if guild not in res[0]:
             await ctx.send(
                 embed=discord.Embed(
-                    description="You did not assign premium to that server.", colour=self.bot.error_colour,
+                    description="You did not assign premium to that server.",
+                    colour=self.bot.error_colour,
                 )
             )
             return

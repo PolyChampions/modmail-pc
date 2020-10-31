@@ -3,13 +3,10 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def get_guild_prefix(bot, guild, json_dict=False):
+def get_guild_prefix(bot, guild):
     if not guild:
         return bot.config.default_prefix
-    if json_dict:
-        guild_id = guild["id"]
-    else:
-        guild_id = guild.id
+    guild_id = guild.id
     try:
         prefix = bot.all_prefix[guild_id]
         return bot.config.default_prefix if prefix is None else prefix
@@ -23,11 +20,31 @@ async def get_user_settings(bot, user):
 
 
 async def get_premium_slots(bot, user):
-    data = await bot.cogs["Communication"].handler("get_user_premium", 1, {"user_id": user})
-    if not data or data[0] == 0:
+    data = await bot.comm.handler("get_user_premium", 1, {"user_id": user})
+    if not data:
+        async with bot.pool.acquire() as conn:
+            res = await conn.fetchrow("SELECT guild FROM premium WHERE identifier=$1", user)
+            if res:
+                return 1
         return False
     else:
-        return data[0]
+        return data
+
+
+async def wipe_premium(bot, user):
+    async with bot.pool.acquire() as conn:
+        res = await conn.fetchrow("SELECT identifier, guild FROM premium WHERE identifier=$1", user)
+        if res:
+            for guild in res[1]:
+                await conn.execute(
+                    "UPDATE data SET welcome=$1, goodbye=$2, loggingplus=$3 WHERE guild=$4",
+                    None,
+                    None,
+                    False,
+                    guild,
+                )
+                await conn.execute("DELETE FROM snippet WHERE guild=$1", guild)
+        await conn.execute("DELETE FROM premium WHERE identifier=$1", user)
 
 
 def get_modmail_user(channel):

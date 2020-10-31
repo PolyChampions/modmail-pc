@@ -9,27 +9,31 @@ from pathlib import Path
 
 import aiohttp
 import aioredis
-
 import config
 
 payload = {
     "Authorization": f"Bot {config.token}",
-    "User-Agent": f"DiscordBot (custom, {config.__version__})",
+    "User-Agent": "DiscordBot (custom, 1.0.0)",
 }
 
 
 async def get_shard_count():
     async with aiohttp.ClientSession() as session, session.get(
-        "https://discordapp.com/api/gateway/bot", headers=payload,
+        "https://discord.com/api/v8/gateway/bot",
+        headers=payload,
     ) as req:
         response = await req.json()
     return response["shards"]
 
 
 def get_cluster_list(shards):
-    return [
-        list(range(0, shards)[i : i + config.shards_per_cluster]) for i in range(0, shards, config.shards_per_cluster)
-    ]
+    base, extra = divmod(shards, config.clusters)
+    shards = list(range(shards))
+    clusters = []
+    for i in range(config.clusters):
+        clusters.append(shards[: base + (i < extra)])
+        shards = shards[base + (i < extra) :]
+    return clusters
 
 
 class Instance:
@@ -143,7 +147,7 @@ class Main:
                 print("[Cluster Manager] Received signal to perform a rolling restart.")
                 for instance in self.instances:
                     self.loop.create_task(instance.restart())
-                    await asyncio.sleep(config.shards_per_cluster * 10)
+                    await asyncio.sleep(len(self.instances[0].shard_list) * 8)
 
     async def close(self):
         await self.redis.execute_pubsub("UNSUBSCRIBE", config.ipc_channel)
@@ -171,7 +175,7 @@ class Main:
             self.instances.append(
                 Instance(i, shard_list, shard_count, self.loop, main=self, cluster_count=len(clusters))
             )
-            await asyncio.sleep(config.shards_per_cluster * 10)
+            await asyncio.sleep(len(clusters[0]) * 8)
 
 
 loop = asyncio.get_event_loop()
