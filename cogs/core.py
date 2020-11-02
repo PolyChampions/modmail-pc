@@ -25,6 +25,7 @@ class Core(commands.Cog):
     @commands.command(
         description="Reply to the ticket, useful when anonymous messaging is enabled.",
         usage="reply <message>",
+        aliases=["r"]
     )
     async def reply(self, ctx, *, message):
         await self.bot.cogs["ModMailEvents"].send_mail_mod(ctx.message, ctx.prefix, False, message)
