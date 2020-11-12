@@ -19,11 +19,15 @@ class Prometheus:
         self.ticks = os.sysconf("SC_CLK_TCK")
         self.btime = 0
 
-        with open(os.path.join("/proc", "stat"), "rb") as stat:
-            for line in stat:
-                if line.startswith(b"btime "):
-                    self.btime = float(line.split()[1])
-                    break
+        try:
+            with open(os.path.join("/proc", "stat"), "rb") as stat:
+                for line in stat:
+                    if line.startswith(b"btime "):
+                        self.btime = float(line.split()[1])
+                        break
+        except FileNotFoundError:
+            # Handling exception here that base code does not since /proc/stat does not exist on MacOS
+            pass
 
         self.vmem = Gauge("process_virtual_memory_bytes", "Virtual memory size in bytes.")
         self.rss = Gauge("process_resident_memory_bytes", "Resident memory size in bytes.")

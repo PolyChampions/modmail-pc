@@ -22,6 +22,7 @@ class ModMail(commands.AutoShardedBot):
         self.session = aiohttp.ClientSession(loop=self.loop)
         self.cluster = kwargs.get("cluster_id")
         self.cluster_count = kwargs.get("cluster_count")
+        self.activity = discord.Activity(name=config.activity, type=discord.ActivityType.watching)
         self.version = kwargs.get("version")
 
     @property

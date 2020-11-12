@@ -27,7 +27,7 @@ class Core(commands.Cog):
         usage="reply <message>",
         aliases=["r"]
     )
-    async def reply(self, ctx, *, message):
+    async def reply(self, ctx, *, message: str = None):
         await self.bot.cogs["ModMailEvents"].send_mail_mod(ctx.message, ctx.prefix, False, message)
 
     @checks.is_modmail_channel()
