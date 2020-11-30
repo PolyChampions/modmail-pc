@@ -18,7 +18,7 @@ class ModMailEvents(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if message.guild.me in message.mentions:
-            return await message.channel.send(f'To open a ModMail ticket please PM me details of your issue.')
+            return await message.channel.send(f'To open a ModMail ticket please DM me details of your issue.')
 
         return
         # revision Sep 19 - no longer want a reply created if an attachment is sent solo, so might not be any reason for this function
