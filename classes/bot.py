@@ -15,7 +15,7 @@ from utils import prometheus, tools
 log = logging.getLogger(__name__)
 
 
-class ModMail(commands.AutoShardedBot):
+class ModMail(commands.Bot):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.start_time = datetime.datetime.utcnow()
