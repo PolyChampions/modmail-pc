@@ -89,7 +89,6 @@ class Events(commands.Cog):
         status = str(params.response.status)
         if not route.startswith("/"):
             return
-        self.bot.prom.http.inc({"method": params.method, "route": route, "status": status})
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -112,7 +111,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_shard_ready(self, shard):
-        self.bot.prom.events.inc({"type": "READY"})
         embed = discord.Embed(
             title=f"[Cluster {self.bot.cluster}] Shard {shard} Ready",
             colour=0x00FF00,
@@ -122,7 +120,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_shard_connect(self, shard):
-        self.bot.prom.events.inc({"type": "CONNECT"})
         embed = discord.Embed(
             title=f"[Cluster {self.bot.cluster}] Shard {shard} Connected",
             colour=0x00FF00,
@@ -132,7 +129,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_shard_disconnect(self, shard):
-        self.bot.prom.events.inc({"type": "DISCONNECT"})
         embed = discord.Embed(
             title=f"[Cluster {self.bot.cluster}] Shard {shard} Disconnected",
             colour=0xFF0000,
@@ -142,7 +138,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_shard_resumed(self, shard):
-        self.bot.prom.events.inc({"type": "RESUME"})
         embed = discord.Embed(
             title=f"[Cluster {self.bot.cluster}] Shard {shard} Resumed",
             colour=self.bot.config.primary_colour,
@@ -152,7 +147,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        self.bot.prom.guilds_join.inc({})
         embed = discord.Embed(
             title="Server Join",
             description=f"{guild.name} ({guild.id})",
@@ -167,7 +161,6 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        self.bot.prom.guilds_leave.inc({})
         async with self.bot.pool.acquire() as conn:
             await conn.execute("DELETE FROM data WHERE guild=$1", guild.id)
         embed = discord.Embed(
@@ -187,7 +180,6 @@ class Events(commands.Cog):
         ctx = await self.bot.get_context(message)
         if not ctx.command:
             return
-        self.bot.prom.commands.inc({"name": ctx.command.name})
         if message.guild:
             if message.guild.id in self.bot.banned_guilds:
                 await message.guild.leave()
@@ -224,7 +216,6 @@ class Events(commands.Cog):
             t = message.get("t")
             if t == "PRESENCE_UPDATE":
                 return
-            self.bot.prom.dispatch.inc({"type": t})
 
 
 def setup(bot):

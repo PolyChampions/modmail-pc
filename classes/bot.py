@@ -10,7 +10,7 @@ import config
 
 from discord.ext import commands
 
-from utils import prometheus, tools
+from utils import tools
 
 log = logging.getLogger(__name__)
 
@@ -92,15 +92,9 @@ class ModMail(commands.Bot):
     async def connect_postgres(self):
         self.pool = await asyncpg.create_pool(**self.config.database, max_size=50, command_timeout=60)
 
-    async def connect_prometheus(self):
-        self.prom = prometheus.Prometheus(self)
-        if self.config.testing is False:
-            await self.prom.start()
-
     async def start_bot(self):
         await self.connect_redis()
         await self.connect_postgres()
-        await self.connect_prometheus()
         for extension in self.config.initial_extensions:
             try:
                 self.load_extension(extension)

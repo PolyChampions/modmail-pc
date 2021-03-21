@@ -20,7 +20,6 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
         self.guild = None
 
     async def send_mail(self, message, guild, to_send):
-        self.bot.prom.tickets_message.inc({})
         guild_obj = discord.utils.get(self.bot.guilds, id=guild)
         guild = await self.bot.comm.handler("get_guild", 1, {"guild_id": guild})
         if not guild:
@@ -84,7 +83,6 @@ class DirectMessageEvents(commands.Cog, name="Direct Message"):
         if len(channels) > 0:
             channel_id = channels[0].id
         if not channel_id:
-            self.bot.prom.tickets.inc({})
             try:
                 name = "".join(
                     x for x in message.author.name.lower() if x not in string.punctuation and x.isprintable()
