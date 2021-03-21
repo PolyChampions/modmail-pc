@@ -34,7 +34,7 @@ class Configuration(commands.Cog):
         attach_files=True,
         add_reactions=True,
     )
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(description="Set up ModMail with an interactive guide.", usage="setup")
     async def setup(self, ctx):
@@ -159,7 +159,7 @@ class Configuration(commands.Cog):
                 await conn.execute("UPDATE data SET prefix=$1 WHERE guild=$2", prefix, ctx.guild.id)
             self.bot.all_prefix[ctx.guild.id] = prefix
             await ctx.send(
-                embed=discord.Embed(
+                embed=discord.Embed(    
                     description="Successfully changed the prefix to "
                     f"`{self.bot.config.default_prefix if prefix is None else prefix}`.",
                     colour=self.bot.primary_colour,
@@ -168,7 +168,7 @@ class Configuration(commands.Cog):
 
     @commands.bot_has_permissions(manage_channels=True, manage_roles=True)
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(description="Re-create the category for the ModMail channels.", usage="category [name]")
     async def category(self, ctx, *, name: str = "ModMail"):
@@ -203,7 +203,7 @@ class Configuration(commands.Cog):
 
     @commands.bot_has_permissions(manage_channels=True, manage_roles=True)
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Set or clear the roles that have access to ticket related commands and replying to tickets.",
@@ -256,7 +256,7 @@ class Configuration(commands.Cog):
         )
 
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Set or clear the roles mentioned when a ticket is opened. You can also use `everyone` and `here`.",
@@ -304,7 +304,7 @@ class Configuration(commands.Cog):
 
     @commands.bot_has_permissions(manage_channels=True)
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Toggle between enable and disable for ModMail logs.",
@@ -351,7 +351,7 @@ class Configuration(commands.Cog):
 
     @checks.in_database()
     #@checks.is_premium()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Set or clear the message that is sent when a new ticket is opened. Tags `{username}`, "
@@ -368,7 +368,7 @@ class Configuration(commands.Cog):
 
     @checks.in_database()
     #@checks.is_premium()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Set or clear the message that is sent when a ticket is closed. Tags `{username}`, "
@@ -385,7 +385,7 @@ class Configuration(commands.Cog):
 
     @checks.in_database()
     #@checks.is_premium()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Toggle advanced logging which includes messages sent and received.",
@@ -408,7 +408,7 @@ class Configuration(commands.Cog):
         )
 
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(description="Toggle default anonymous messages.", usage="anonymous")
     async def anonymous(self, ctx):
@@ -427,7 +427,7 @@ class Configuration(commands.Cog):
         )
 
     @checks.in_database()
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(description="View the configurations for the current server.", usage="viewconfig")
     async def viewconfig(self, ctx):

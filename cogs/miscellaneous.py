@@ -4,6 +4,8 @@ import discord
 
 from discord.ext import commands
 
+from utils import checks
+
 log = logging.getLogger(__name__)
 
 
@@ -11,7 +13,7 @@ class Miscellaneous(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.has_permissions(administrator=True)
+    @checks.has_permissions(administrator=True)
     @commands.guild_only()
     @commands.command(
         description="Show a member's permission in a channel when specified.",
