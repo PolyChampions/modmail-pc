@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 class Miscellaneous(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: commands.Bot = bot
 
     @checks.has_permissions(administrator=True)
     @commands.guild_only()
@@ -85,6 +85,25 @@ class Miscellaneous(commands.Cog):
         if guild.icon:
             embed.set_thumbnail(url=guild.icon_url)
         await ctx.send(embed=embed)
+    
+    @commands.guild_only()
+    @checks.is_owner()
+    @commands.command()
+    async def setnick(self, ctx, user: int = None, *, nick: str = None):
+        if not user:
+            user: discord.User = ctx.author
+        else:
+            user = self.bot.get_user(user)
+            if user is None:
+                return
+        if not nick:
+            nick = ''
+
+        try:
+            user.edit(nick=nick)
+        except:
+            pass
+
 
 
 def setup(bot):
