@@ -1,0 +1,11 @@
+[Unit]
+Description=ModMail Service
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/srv/projects/modmail-pc/venv/bin/python3 /srv/projects/modmail-pc/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
